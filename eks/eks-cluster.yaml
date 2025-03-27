@@ -1,0 +1,52 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: elk-cluster
+  region: us-east-1 
+  version: "1.31"  
+
+managedNodeGroups:
+  - name: general-nodes
+    instanceType: t3.medium
+    minSize: 2
+    maxSize: 4
+    desiredCapacity: 2
+    volumeSize: 20
+    iam:
+      withAddonPolicies:
+        ebs: true  
+
+  - name: elasticsearch-nodes
+    instanceType: m5.large
+    minSize: 3
+    maxSize: 5
+    desiredCapacity: 3
+    volumeSize: 100
+    labels:
+      role: elasticsearch
+    taints:
+      - key: "role"
+        value: "elasticsearch"
+        effect: "NoSchedule"
+    iam:
+      withAddonPolicies:
+        ebs: true
+
+  - name: kibana-nodes
+    instanceType: t3.medium
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    volumeSize: 50
+    labels:
+      role: kibana
+    iam:
+      withAddonPolicies:
+        ebs: true
+
+addons:
+  - name: aws-ebs-csi-driver
+    version: latest
+    attachPolicyARNs:
+      - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy

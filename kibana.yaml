@@ -1,0 +1,39 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: prod-kb
+spec:
+  version: 8.17.3
+  count: 1
+  elasticsearchRef:
+    name: prod-es
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 500m
+            limits:
+              memory: 2Gi
+              cpu: 1
+      tolerations:
+        - key: "role"
+          operator: "Equal"
+          value: "elasticsearch"
+          effect: "NoSchedule"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-kb-svc
+spec:
+  selector:
+    kibana.k8s.elastic.co/name: prod-kb
+  ports:
+    - protocol: TCP
+      port: 5601
+      targetPort: 5601
+  type: ClusterIP
