@@ -1,6 +1,4 @@
 # ELK-Cluster-Setup
-![image](https://github.com/user-attachments/assets/b20b8656-777a-4ef0-b09d-06df37da037f)
-
 ## Prerequisites
 Ensure the following tools are installed before proceeding:
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
